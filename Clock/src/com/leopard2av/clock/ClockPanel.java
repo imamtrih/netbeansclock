@@ -8,12 +8,14 @@
  *
  * Created on 14-04-2009, 12:18:22 PM
  */
-
 package com.leopard2av.clock;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DateFormatter;
 import org.openide.util.Exceptions;
@@ -24,11 +26,15 @@ import org.openide.util.Exceptions;
  * @author leopard (aka leopard2av on some places) pedro.oyarce@gmail.com
  */
 public class ClockPanel extends javax.swing.JPanel {
+
     private static final long serialVersionUID = -5149030714157897159L;
 
     /** Creates new form ClockPanel */
     public ClockPanel() {
+        reminders = new ArrayList<Reminder>();
+        toReview = new ArrayList<Reminder>();
         initComponents();
+        alertLbl.setVisible(false);
         start();
     }
 
@@ -37,12 +43,13 @@ public class ClockPanel extends javax.swing.JPanel {
      */
     private void start() {
         Runnable timer = new Runnable() {
+
             public void run() {
-                while(true) {
+                while (true) {
                     SwingUtilities.invokeLater(new Runnable() {
 
                         public void run() {
-                           showHour();
+                            showHour();
                         }
                     });
                     try {
@@ -54,6 +61,20 @@ public class ClockPanel extends javax.swing.JPanel {
             }
         };
         new Thread(timer).start();
+        Runnable check = new Runnable() {
+
+            public void run() {
+                while (true) {
+                    checkReminders();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            }
+        };
+        new Thread(check).start();
     }
 
     /**
@@ -65,9 +86,26 @@ public class ClockPanel extends javax.swing.JPanel {
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
-         hourLbl.setText(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+        hourLbl.setText(new SimpleDateFormat("HH:mm:ss").format(new Date()));
     }
 
+    /**
+     * Check reminders
+     */
+    private void checkReminders() {
+        Date rightNow = new Date();
+        for (Reminder rem : reminders) {
+            if (rem.getWhen().before(rightNow)) {
+                toReview.add(rem);
+            }
+        }
+        reminders.removeAll(toReview);
+        alertLbl.setVisible(!toReview.isEmpty());
+    }
+
+   
+
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -81,18 +119,32 @@ public class ClockPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         dateLbl = new javax.swing.JLabel();
         hourLbl = new javax.swing.JLabel();
+        alertLbl = new javax.swing.JLabel();
 
         setOpaque(false);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/leopard2av/clock/fecha.png"))); // NOI18N
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ClockPanel.class, "ClockPanel.jLabel1.text")); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                showReminderWindow(evt);
+            }
+        });
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/leopard2av/clock/hora.png"))); // NOI18N
         jLabel2.setText(org.openide.util.NbBundle.getMessage(ClockPanel.class, "ClockPanel.jLabel2.text")); // NOI18N
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                about(evt);
+            }
+        });
 
         dateLbl.setText(org.openide.util.NbBundle.getMessage(ClockPanel.class, "ClockPanel.dateLbl.text")); // NOI18N
 
         hourLbl.setText(org.openide.util.NbBundle.getMessage(ClockPanel.class, "ClockPanel.hourLbl.text")); // NOI18N
+
+        alertLbl.setIcon(new javax.swing.ImageIcon("/home/pedro/NetBeansProjects/Clock/src/com/leopard2av/clock/aviso.png")); // NOI18N
+        alertLbl.setText(org.openide.util.NbBundle.getMessage(ClockPanel.class, "ClockPanel.alertLbl.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -102,11 +154,13 @@ public class ClockPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dateLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                .addGap(12, 12, 12)
+                .addComponent(dateLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hourLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(hourLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(alertLbl)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,9 +168,10 @@ public class ClockPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dateLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
                     .addComponent(hourLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(alertLbl)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dateLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -125,12 +180,26 @@ public class ClockPanel extends javax.swing.JPanel {
         hourLbl.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(ClockPanel.class, "ClockPanel.jLabel4.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
+    private void about(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_about
+        if (evt.getClickCount() == 3) {
+            JOptionPane.showMessageDialog(dateLbl,
+                    "NetBeans Clock... A simple clock for NetBeans\n(c) 2009\nleopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com",
+                    "About", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_about
 
+    private void showReminderWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReminderWindow
+        if (evt.getClickCount() == 2) {
+
+        }
+    }//GEN-LAST:event_showReminderWindow
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel alertLbl;
     private javax.swing.JLabel dateLbl;
     private javax.swing.JLabel hourLbl;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
-
+    private Collection<Reminder> reminders;
+    private Collection<Reminder> toReview;
 }
