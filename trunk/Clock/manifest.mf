@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: com.leopard2av.clock
+OpenIDE-Module-Layer: com/leopard2av/clock/layer.xml
+OpenIDE-Module-Localizing-Bundle: com/leopard2av/clock/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
