@@ -10,6 +10,7 @@
  */
 package com.leopard2av.clock;
 
+import java.awt.Dialog;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DateFormatter;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.util.Exceptions;
 
 /**
@@ -28,7 +31,7 @@ import org.openide.util.Exceptions;
 public class ClockPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -5149030714157897159L;
-    private static final String VERSION = "1.0.1";
+    public static final String VERSION = "1.0.1";
 
     /** Creates new form ClockPanel */
     public ClockPanel() {
@@ -183,15 +186,16 @@ public class ClockPanel extends javax.swing.JPanel {
 
     private void about(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_about
         if (evt.getClickCount() == 2) {
-            JOptionPane.showMessageDialog(dateLbl,
-                    "NetBeans Clock " + VERSION + "... A simple clock for NetBeans\n(c) 2009\nleopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com",
-                    "About", JOptionPane.INFORMATION_MESSAGE);
+           JOptionPane.showMessageDialog(dateLbl,"NetBeans Clock ... A simple clock for NetBeans\nv"
+                   + VERSION +"\n(c) 2009 by leopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com"
+                   , "About", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_about
 
     private void showReminderWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReminderWindow
         if (evt.getClickCount() == 2) {
-
+           Dialog d =DialogDisplayer.getDefault().createDialog(new DialogDescriptor(new AddReminderPanel(), "Add Reminder..."));
+           d.setVisible(true);
         }
     }//GEN-LAST:event_showReminderWindow
     // Variables declaration - do not modify//GEN-BEGIN:variables
