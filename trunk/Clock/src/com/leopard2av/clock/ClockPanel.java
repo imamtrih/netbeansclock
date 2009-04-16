@@ -28,6 +28,7 @@ import org.openide.util.Exceptions;
 public class ClockPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -5149030714157897159L;
+    private static final String VERSION = "1.0.1";
 
     /** Creates new form ClockPanel */
     public ClockPanel() {
@@ -183,7 +184,7 @@ public class ClockPanel extends javax.swing.JPanel {
     private void about(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_about
         if (evt.getClickCount() == 2) {
             JOptionPane.showMessageDialog(dateLbl,
-                    "NetBeans Clock... A simple clock for NetBeans\n(c) 2009\nleopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com",
+                    "NetBeans Clock " + VERSION + "... A simple clock for NetBeans\n(c) 2009\nleopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com",
                     "About", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_about
