@@ -40,7 +40,7 @@ public class AddReminderPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 342, Short.MAX_VALUE)
+            .addGap(0, 367, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
