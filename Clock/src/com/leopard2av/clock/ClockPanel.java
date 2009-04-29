@@ -193,10 +193,12 @@ public class ClockPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_about
 
     private void showReminderWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReminderWindow
+        /*
         if (evt.getClickCount() == 2) {
            Dialog d =DialogDisplayer.getDefault().createDialog(new DialogDescriptor(new AddReminderPanel(), "Add Reminder..."));
            d.setVisible(true);
         }
+        */
     }//GEN-LAST:event_showReminderWindow
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel alertLbl;
