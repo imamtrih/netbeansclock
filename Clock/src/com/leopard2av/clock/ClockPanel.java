@@ -10,17 +10,12 @@
  */
 package com.leopard2av.clock;
 
-import java.awt.Dialog;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DateFormatter;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
 import org.openide.util.Exceptions;
 
 /**
@@ -35,8 +30,6 @@ public class ClockPanel extends javax.swing.JPanel {
 
     /** Creates new form ClockPanel */
     public ClockPanel() {
-        reminders = new ArrayList<Reminder>();
-        toReview = new ArrayList<Reminder>();
         initComponents();
         alertLbl.setVisible(false);
         start();
@@ -65,20 +58,7 @@ public class ClockPanel extends javax.swing.JPanel {
             }
         };
         new Thread(timer).start();
-        Runnable check = new Runnable() {
 
-            public void run() {
-                while (true) {
-                    checkReminders();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            }
-        };
-        new Thread(check).start();
     }
 
     /**
@@ -93,23 +73,6 @@ public class ClockPanel extends javax.swing.JPanel {
         hourLbl.setText(new SimpleDateFormat("HH:mm:ss").format(new Date()));
     }
 
-    /**
-     * Check reminders
-     */
-    private void checkReminders() {
-        Date rightNow = new Date();
-        for (Reminder rem : reminders) {
-            if (rem.getWhen().before(rightNow)) {
-                toReview.add(rem);
-            }
-        }
-        reminders.removeAll(toReview);
-        alertLbl.setVisible(!toReview.isEmpty());
-    }
-
-   
-
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -186,19 +149,17 @@ public class ClockPanel extends javax.swing.JPanel {
 
     private void about(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_about
         if (evt.getClickCount() == 2) {
-           JOptionPane.showMessageDialog(dateLbl,"NetBeans Clock ... A simple clock for NetBeans\nv"
-                   + VERSION +"\n(c) 2009 by leopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com"
-                   , "About", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(dateLbl, "NetBeans Clock ... A simple clock for NetBeans\nv" + VERSION + "\n(c) 2009 by leopard (aka leopard2av)\nhttp://netbeansclock.googlecode.com", "About", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_about
 
     private void showReminderWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReminderWindow
         /*
         if (evt.getClickCount() == 2) {
-           Dialog d =DialogDisplayer.getDefault().createDialog(new DialogDescriptor(new AddReminderPanel(), "Add Reminder..."));
-           d.setVisible(true);
+        Dialog d =DialogDisplayer.getDefault().createDialog(new DialogDescriptor(new AddReminderPanel(), "Add Reminder..."));
+        d.setVisible(true);
         }
-        */
+         */
     }//GEN-LAST:event_showReminderWindow
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel alertLbl;
@@ -207,6 +168,4 @@ public class ClockPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
-    private Collection<Reminder> reminders;
-    private Collection<Reminder> toReview;
 }
