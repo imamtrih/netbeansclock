@@ -19,7 +19,7 @@ import javax.swing.text.DateFormatter;
 import org.openide.util.Exceptions;
 
 /**
- * A simple clock/calendar plugin for Netbeans 6.5
+ * A simple clock/calendar plugin for Netbeans 6.5 / 6.7
  *
  * @author leopard (aka leopard2av on some places) pedro.oyarce@gmail.com
  */
