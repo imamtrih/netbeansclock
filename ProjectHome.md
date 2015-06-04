@@ -1,0 +1,1 @@
+A simple clock that shows date and time on NetBeans 6.5 toolbar
